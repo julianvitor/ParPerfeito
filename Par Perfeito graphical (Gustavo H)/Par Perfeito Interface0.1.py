@@ -12,11 +12,11 @@ mae.geometry('1024x768')
 mae.title('Par Perfeito®')
 
 #icone app
-img = tkinter.PhotoImage(file='icon.gif')
+img = tkinter.PhotoImage(file='icone.gif')
 mae.tk.call('wm', 'iconphoto', mae._w, img)
 
 #Imagem de Fundo
-button_image = PhotoImage(file="background.gif")
+button_image = PhotoImage(file="fundo.gif")
 ok_button = Button(mae, text="ok",image=button_image,compound=LEFT)
 ok_button.grid()
 canvasWidth=1024

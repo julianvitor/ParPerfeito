@@ -11,7 +11,7 @@ i.geometry('1024x720')
 i.title('Par Perfeito®')
 
 #icone app
-img = tkinter.PhotoImage(file='icon.gif')
+img = tkinter.PhotoImage(file='icone.gif')
 i.tk.call('wm', 'iconphoto', i._w, img)
 
 #Texto1

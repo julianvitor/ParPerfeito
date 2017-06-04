@@ -11,6 +11,10 @@ mae = Tk()
 mae.geometry('1024x720')
 mae.title('Par Perfeito®')
 
+#icone app
+img = tkinter.PhotoImage(file='icon.gif')
+mae.tk.call('wm', 'iconphoto', mae._w, img)
+
 #Texto1
 
 nome= Label(mae, text='Nome', font=('Digital dream', 20), fg='black', bg='white')

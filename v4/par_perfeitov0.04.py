@@ -1,27 +1,18 @@
 #coding: utf-8
 
-import tkinter
-from tkinter import*
 import csv
-import os
-import sys
 import math
 
 
 while True:
-
-
     lista = []
-    ################abrir banco de dados###################
-    with open('dados.csv') as csvfile:
+    #abrir banco de dados
+    with open('/home/julian/Dev/ParPerfeito/v4/dados.csv') as csvfile:
         spamreader = csv.reader(csvfile, delimiter=',')
         for linha in spamreader:
             lista.append(linha)
 
-
-
-    # ###########função de 'busca'#####################
-
+    #função de 'busca'
     def encontrar_pessoa(elemento):
         pos_i = 0 # variável provisória de índice
         pos_j = 0 # idem
@@ -39,20 +30,13 @@ while True:
 
 
 
-    ##################aqui comeca o mapeamento dos elementos####################
+    #aqui comeca o mapeamento dos elementos
 
     procura_pessoa = input("digite o nome da pessoa que deseja procurar: ") 
-
-
     pessoa_endereco = encontrar_pessoa(procura_pessoa) # chamamos a funcao e salvamos em lista_pessoa_endereco
-
-
     lista_pessoa_endereco = list(pessoa_endereco)
     lista_interna = int(lista_pessoa_endereco[0])
     numero_pessoas = len(lista)
-
-
-
 
     print(lista_pessoa_endereco,"pessoa endereco")
     print(lista_interna,"lista interna")
@@ -60,11 +44,10 @@ while True:
     print(numero_pessoas,"numero de pessoas")
     print (lista[lista_interna][2],"preferencia")
 
-
     VA = [] #pessoa constante que foi definida pelo entry de entrada
     VB = [] #pessoas do banco de dados para combinar
 
-    ###########################variaveis do banco de dados########################
+    #variaveis do banco de dados
     a_preferencia = (lista[lista_interna][2])
     aa = (lista[lista_interna][3])
     ab = (lista[lista_interna][4])
@@ -114,13 +97,8 @@ while True:
     au = float(au)
     av = float(av)
     aw = float(aw)
-    #########################################################################
-
-
-
-
-
-    ###################condicionais para expecificar na hora de ler as iformacoes do arquivo final##########
+    
+    #condicionais para expecificar na hora de ler as informacoes do arquivo final
     if (a_preferencia == 1):
         a_preferencia = ("hetero")
     elif (a_preferencia == 2):
@@ -130,7 +108,7 @@ while True:
 
 
 
-    #######################pessoa constante que foi definida pelo entry de entrada#######################
+    #pessoa constante que foi definida pelo entry de entrada
     VA = [float(aa), float(ab), float(ac), float(ad), float(ae), float(af), float(ag), float(ah), float(ai), float(aj),
           float(ak), float(al), float(am), float(an), float(ao), float(ap), float(aq), float(ar), float(a_s), float(at),
           float(au), float(av), float(aw)]
@@ -138,8 +116,7 @@ while True:
     print(VA)
 
 
-
-    ####################calculo para as combinacoes#################
+    #calculo para as combinacoes
     c = (0)
     results = []
     while c < numero_pessoas:
@@ -217,13 +194,6 @@ while True:
         print(cos)
 
         acos = math.acos(cos)
-
-
-
-
-        
-        
-
         ang = ((acos * 180) / math.pi)
         nome_par = (lista[c][0])
         orientacao = (lista[c][2])
@@ -242,7 +212,7 @@ while True:
 
         combinacoes = [str(ang) + " ==> " + str(procura_pessoa) + "<=>" + str(nome_par)]
 
-        result_file = open('resultado.csv', 'w')
+        result_file = open('/home/julian/Dev/ParPerfeito/v4/resultado.csv', 'w')
 
         results.append(
             str(ang) + "," + str(procura_pessoa) + " .=>. " + str(a_preferencia) + str(" .<=>. ") + str(nome_par) + ".=>. " + str(orientacao))

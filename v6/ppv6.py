@@ -1,80 +1,70 @@
-#coding: utf-8
-
 import csv
 import math
 
-# Função para abrir o banco de dados
-def abrir_banco_dados():
-    lista = []
-    with open('/home/julian/Dev/ParPerfeito/v6/dados.csv') as csvfile:
-        spamreader = csv.reader(csvfile, delimiter=',')
-        for linha in spamreader:
-            lista.append(linha)
-    return lista
+class Pessoa:
+    def __init__(self, dados):
+        self.nome = dados[0]
+        self.orientacao = int(dados[2])
+        self.valores = [float(valor) for valor in dados[3:]]
 
-# Função para encontrar uma pessoa no banco de dados
-def encontrar_pessoa(nome, lista):
-    for i in range(len(lista)):
-        for j in range(len(lista[i])):
-            if nome in lista[i][j]:
-                return i, j
-
-# Função para calcular as combinações
-def calcular_combinacoes(pessoa_procurada, valores_pessoa_procurada, lista):
-    resultados = []
-    for i in range(len(lista)):
-        valores_pessoa = [float(lista[i][j]) for j in range(3, 26)]
-
-        produto_escalar = sum(valores_pessoa_procurada[j] * valores_pessoa[j] for j in range(0, 23))
-        modulo_vetor_pessoa_procurada = math.sqrt(sum(valores_pessoa_procurada[j] * valores_pessoa_procurada[j] for j in range(0, 23)))
-        modulo_vetor_pessoa = math.sqrt(sum(valores_pessoa[j] * valores_pessoa[j] for j in range(0, 23)))
-
-        cosseno = produto_escalar / (modulo_vetor_pessoa * modulo_vetor_pessoa_procurada)
+    def calcular_similaridade(self, outra_pessoa):
+        produto_escalar = sum(a * b for a, b in zip(self.valores, outra_pessoa.valores))
+        modulo_self = math.sqrt(sum(a * a for a in self.valores))
+        modulo_outra = math.sqrt(sum(b * b for b in outra_pessoa.valores))
+        cosseno = produto_escalar / (modulo_self * modulo_outra)
         cosseno = min(1, cosseno)
         angulo = (math.acos(cosseno) * 180) / math.pi
-        nome_par = lista[i][0]
-        orientacao = int(lista[i][2])
+        return angulo
 
-        if orientacao == 1:
-            orientacao = "hetero"
-        elif orientacao == 2:
-            orientacao = "bi"
-        elif orientacao == 3:
-            orientacao = "homosexual"
+    def obter_orientacao(self):
+        if self.orientacao == 1:
+            return "hetero"
+        elif self.orientacao == 2:
+            return "bi"
+        elif self.orientacao == 3:
+            return "homosexual"
 
-        resultados.append(f"{angulo},{pessoa_procurada} .=>. {orientacao} .<=>. {nome_par}.=>. {orientacao}")
+class GerenciadorPessoas:
+    def __init__(self):
+        self.pessoas = []
 
-    return resultados
+    def carregar_dados(self, caminho_arquivo):
+        with open(caminho_arquivo, 'r') as csvfile:
+            spamreader = csv.reader(csvfile, delimiter=',')
+            for linha in spamreader:
+                pessoa = Pessoa(linha)
+                self.pessoas.append(pessoa)
 
-# Função para salvar os resultados em um arquivo
-def salvar_resultados(resultados):
-    with open('/home/julian/Dev/ParPerfeito/v6/resultado.csv', 'w') as result_file:
-        for res in resultados:
-            result_file.write(res + "\n")
+    def encontrar_pessoa(self, nome):
+        for pessoa in self.pessoas:
+            if nome in pessoa.nome:
+                return pessoa
 
-def main():
-    lista = abrir_banco_dados()
+    def calcular_combinacoes(self, pessoa_procurada):
+        resultados = []
+        for pessoa in self.pessoas:
+            if pessoa != pessoa_procurada:
+                angulo = pessoa_procurada.calcular_similaridade(pessoa)
+                orientacao_procurada = pessoa_procurada.obter_orientacao()
+                orientacao_outra = pessoa.obter_orientacao()
+                resultados.append(f"{angulo},{pessoa_procurada.nome} .=>. {orientacao_procurada} .<=>. {pessoa.nome}.=>. {orientacao_outra}")
+        return resultados
 
-    nome_pessoa_procurada = input("Digite o nome da pessoa que deseja procurar: ")
-    pessoa_encontrada = encontrar_pessoa(nome_pessoa_procurada, lista)
-    indice_lista_interna = pessoa_encontrada[0]
-    total_pessoas = len(lista)
+    def salvar_resultados(self, resultados, caminho_arquivo):
+        with open(caminho_arquivo, 'w') as result_file:
+            for res in resultados:
+                result_file.write(res + "\n")
 
-    print(f"Pessoa encontrada: {pessoa_encontrada}")
-    print(f"Índice da lista interna: {indice_lista_interna}")
-    print(f"Preferência: {lista[0][2]}")
-    print(f"Total de pessoas: {total_pessoas}")
-    print(f"Preferência: {lista[indice_lista_interna][2]}")
-
-    valores_pessoa_procurada = [float(lista[indice_lista_interna][j]) for j in range(3, 26)]
-
-    print(f"Valores da pessoa procurada: {valores_pessoa_procurada}")
-
-    resultados = calcular_combinacoes(nome_pessoa_procurada, valores_pessoa_procurada, lista)
-    salvar_resultados(resultados)
-
-    print("Arquivo resultado.csv gerado com sucesso!")
-    print("Estou te observando")
+    def processar(self, nome_pessoa_procurada, caminho_arquivo_dados, caminho_arquivo_resultado):
+        self.carregar_dados(caminho_arquivo_dados)
+        pessoa_procurada = self.encontrar_pessoa(nome_pessoa_procurada)
+        resultados = self.calcular_combinacoes(pessoa_procurada)
+        self.salvar_resultados(resultados, caminho_arquivo_resultado)
+        print("Arquivo resultado.csv gerado com sucesso!")
 
 if __name__ == "__main__":
-    main()
+    gerenciador = GerenciadorPessoas()
+    nome_pessoa_procurada = input("Digite o nome da pessoa que deseja procurar: ")
+    caminho_arquivo_dados = '/home/julian/Dev/ParPerfeito/v4/dados.csv'
+    caminho_arquivo_resultado = '/home/julian/Dev/ParPerfeito/v4/resultado.csv'
+    gerenciador.processar(nome_pessoa_procurada, caminho_arquivo_dados, caminho_arquivo_resultado)

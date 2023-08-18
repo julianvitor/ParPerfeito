@@ -65,6 +65,6 @@ class GerenciadorPessoas:
 if __name__ == "__main__":
     gerenciador = GerenciadorPessoas()
     nome_pessoa_procurada = input("Digite o nome da pessoa que deseja procurar: ")
-    caminho_arquivo_dados = '/home/julian/Dev/ParPerfeito/v4/dados.csv'
-    caminho_arquivo_resultado = '/home/julian/Dev/ParPerfeito/v4/resultado.csv'
+    caminho_arquivo_dados = '/home/julian/Dev/ParPerfeito/v6/dados_random.csv'
+    caminho_arquivo_resultado = '/home/julian/Dev/ParPerfeito/v6/resultado.csv'
     gerenciador.processar(nome_pessoa_procurada, caminho_arquivo_dados, caminho_arquivo_resultado)

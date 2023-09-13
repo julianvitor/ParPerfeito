@@ -7,22 +7,27 @@ class Pessoa:
         self.orientacao = int(dados[2])
         self.valores = [float(valor) for valor in dados[3:]]
 
-    def calcular_similaridade(self, outra_pessoa):
-        produto_escalar = sum(a * b for a, b in zip(self.valores, outra_pessoa.valores))
-        modulo_self = math.sqrt(sum(a * a for a in self.valores))
-        modulo_outra = math.sqrt(sum(b * b for b in outra_pessoa.valores))
-        cosseno = produto_escalar / (modulo_self * modulo_outra)
+    def calcular_produto_escalar(self, outra_pessoa):
+        return sum(a * b for a, b in zip(self.valores, outra_pessoa.valores))
+
+    def calcular_modulo(self):
+        return math.sqrt(sum(a * a for a in self.valores))
+
+    def calcular_angulo(self, cosseno):
         cosseno = min(1, cosseno)
         angulo = (math.acos(cosseno) * 180) / math.pi
         return angulo
 
+    def calcular_similaridade(self, outra_pessoa):
+        produto_escalar = self.calcular_produto_escalar(outra_pessoa)
+        modulo_self = self.calcular_modulo()
+        modulo_outra = outra_pessoa.calcular_modulo()
+        cosseno = produto_escalar / (modulo_self * modulo_outra)
+        return self.calcular_angulo(cosseno)
+
     def obter_orientacao(self):
-        if self.orientacao == 1:
-            return "hetero"
-        elif self.orientacao == 2:
-            return "bi"
-        elif self.orientacao == 3:
-            return "homosexual"
+        orientacoes = {1: "hetero", 2: "bi", 3: "homosexual"}
+        return orientacoes.get(self.orientacao, "Desconhecido")
 
 class GerenciadorPessoas:
     def __init__(self):
@@ -30,8 +35,8 @@ class GerenciadorPessoas:
 
     def carregar_dados(self, caminho_arquivo):
         with open(caminho_arquivo, 'r') as csvfile:
-            spamreader = csv.reader(csvfile, delimiter=',')
-            for linha in spamreader:
+            csv_reader = csv.reader(csvfile, delimiter=',')
+            for linha in csv_reader:
                 pessoa = Pessoa(linha)
                 self.pessoas.append(pessoa)
 
